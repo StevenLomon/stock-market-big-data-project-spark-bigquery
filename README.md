@@ -19,3 +19,36 @@ The project uses the following architecture:
 ![Project architecture diagram](/project-architecture-diagram.png "Project architecture diagram")
 
 ## Project journal
+This is my very first project that uses GCP! So I am going into this well versed in AWS but a complete beginner in GCP and will focus on failing forward and translating all my AWS knowledge into GCP
+
+### Setting up IAM
+(My very first question was "Does GCP have any equivalent to AWS IAM?" Indeed it does and it even shares the same name haha!)  
+
+In IAM, an IAM User is first created for project management. This User is granted the role of Project Editor to create, modify and delete resources within the project. Separate service accounts for Dataproc, BigQuery and Cloud Composer are also created since these services will interact with Google Cloud Storage and other resources. (We can think of service accounts like "robots" or "identities" that represent the applications, allowing them to interact with GCP services with the necessary permissions.) The following roles were assigned to each service account:  
+
+Dataproc:  
+* Dataproc Worker: Grants permissions to run Dataproc jobs.
+* Storage Object Viewer: Allows the service account to read/write data from/to Google Cloud Storage (raw and processed data).
+* BigQuery Data Editor: Grants permissions to write the processed data to BigQuery.
+* BigQuery Job User: Allows the service account to execute queries in BigQuery.
+
+BigQuery:  
+* BigQuery Data Editor: Allows editing and inserting data into datasets.
+* BigQuery Job User: Allows the service account to run queries.
+* Storage Object Viewer: Allows BigQuery to interact directly with GCS (e.g., load data from GCS into BigQuery).
+
+Cloud Composer (Airflow):
+* Cloud Composer Admin: Provides access to manage and use Cloud Composer (Airflow).
+* Storage Object Admin: To access GCS for reading/writing raw and processed data.
+* BigQuery Data Editor: For loading data into BigQuery from your workflows.
+* Dataproc Editor: So it can trigger and manage Dataproc jobs.
+
+### Data Ingestion from Alpha Vantage
+
+### Data Processing and Analysis
+
+### Orchastration with Apache Airflow
+
+### Automation with GitHub Actions
+
+### Infrastructure as Code with Terraform
