@@ -16,6 +16,6 @@ The final processed data is visualized and reported using Power BI, connected to
 * Terraform for infrastructure automation (will be integrated in retrospect after the entire project is done the first time round)
 
 The project uses the following architecture:  
-IMAGE
+![Project architecture diagram](/project-architecture-diagram.png "Project architecture diagram")
 
 ## Project journal
