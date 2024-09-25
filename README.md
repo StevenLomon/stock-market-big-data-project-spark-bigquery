@@ -118,7 +118,14 @@ The updated gcloud command line is now:
 gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 250 --image-version 2.2-debian12 --optional-components ZEPPELIN --labels type=spark-learning --initialization-actions 'gs://my-shell-scripts/install-python-3-8.sh' --project marine-cable-436701-t7
 ```
 
-This revealed yet *another* problem haha: The current Dataproc image (Debian 12) is not compatible with Python 3.8. Fix: Use Python 3.9 instead. The shell script was re-written to use Python 3.9 instead and used in the cluster creation process.    
+This revealed yet *another* problem haha: The current Dataproc image (Debian 12) is not compatible with Python 3.8. Fix: Use Python 3.9 instead. The shell script was re-written to use Python 3.9 instead and used in the cluster creation process.  
+
+The *final* gcloud command line:
+```
+gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 250 --image-version 2.2-debian12 --optional-components ZEPPELIN --labels type=spark-learning --initialization-actions 'gs://my-shell-scripts/install-python-3-9.sh' --project marine-cable-436701-t7
+```
+
+The cluster is now created without error but there is still a dependency error in Zeppelin. The problem is that Zeppelin is not pointing to the Python 3.9 package that we installed on the cluster. Simply going to Interpreters and setting zeppelin.python to `usr/bin/python3.9` under Properties did not work. To find out where Python was installed, SSH was used to access the Master Node. Running `which python3.9` did indeed reveal that Python 3.9 is installed at `/usr/local/bin/python3.9`. This was set as the value for zeppelin.python and everything was working.
 
 ### Data Processing and Analysis
 
