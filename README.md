@@ -6,7 +6,7 @@ This project aims to build a scalable big data pipeline using Google Cloud Platf
 The final processed data is visualized and reported using Power BI, connected to BigQuery for seamless business intelligence insights.
 
 ## Technologies used and project architecture
-* Alpha Vantage API for stock data ingestion
+* Alpha Vantage API for stock data ingestion (https://www.alphavantage.co/)
 * Cloud Storage for raw and processed data storage
 * Dataproc with PySpark for data transformation
 * BigQuery as the data warehouse
@@ -39,6 +39,7 @@ Dataproc:
 * Storage Object Viewer: Allows the service account to read/write data from/to Cloud Storage (raw and processed data).
 * BigQuery Data Editor: Grants permissions to write the processed data to BigQuery.
 * BigQuery Job User: Allows the service account to execute queries in BigQuery.
+* Secret Manager Secret Accessor: Allows the service account to access the Alpha Vantage API key stored in Secret Manager.
 
 BigQuery:  
 * BigQuery Data Editor: Allows editing and inserting data into datasets.
@@ -53,26 +54,37 @@ Cloud Composer (Airflow):
 
 ### Data Ingestion from Alpha Vantage
 
+#### Getting API key and storing it in Secret Manager
+A free API key was generated on the Alpha Vantage site. To store it in Secret Manager (the GCP equivalent to AWS Secrets Manager), the Secret Manager API first had to be enabled. A secret is created with the name `alpha-vantage-api-key` and will be accessed by Dataproc, which is able to do so by having the Secret Manager Secret Accessor role attached to its service account.
+
 #### Setting up the Cloud Dataproc Cluster
-A Cloud Dataproc Cluster with Apache Spark is created to run the PySpark jobs. To avoid Kubernetes and containerization (for now haha), the cluster is created on Compute Engine, and to get familiar with Dataproc and Spark, Single Node is chosen rather than Standard. (However, I am stepping out of my Ubuntu comfort bubble and diving into Debian!)  
+A Cloud Dataproc Cluster with Apache Spark is created to run the PySpark jobs. To avoid Kubernetes and containerization (for now haha), the cluster is created on Compute Engine, and to get familiar with Dataproc and Spark, Single Node is chosen rather than Standard. (However, I am stepping out of my Ubuntu comfort bubble and diving into Debian!) Since europe-north1 caused a bunch of trouble (I assume due to free trial limitations. See more down below on errors), us-central1 is chosen as region. 
 
 Default configurations are used with no Spark performance enhancements, and no Dataproc Metastore will not be used. Zeppelin is chosen over Jupyter (the one I have experience using haha) since it is more geared towards Big Data! To put the focus on writign PySpark jobs and working in Zeppelin, everything is left to default values in Configure nodes, Customize cluster and Manage security. The Cloud Dataproc API also had to be enabled.   
 
 The equivalent gcloud command line is:
 ```
-gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --no-address --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 500 --image-version 2.2-debian12 --optional-components ZEPPELIN --project marine-cable-436701-t7
+gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region europe-north1 --no-address --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 500 --image-version 2.2-debian12 --optional-components ZEPPELIN --project marine-cable-436701-t7
 ``` 
 
 Two errors arose when clicking 'Create'.
 1. 500 GB is requested but the project quota only allows for 250 GB. Fix: The Primary disk size is set to 250 GB. 
 2. The cluster is set to internal IPs only but the subnetwork does not have Private Google Access enabled. Fix: Internal IP only is unchecked. This is the simplest solution and using public IPs for now is fine for development.
+3. The default service account (responsible for managing the VMs in the Dataproc cluster) doesn't have the necessary permissions to access Cloud Storage for the Dataproc cluster in the region (europe-north1). The proposed fix: Attach the Storage Object Admin role to the Compute Engine default service account. This didn't solve it haha. The actual fix: Just use us-central1
+
+The updated gcloud command line is:
+```
+gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 250 --image-version 2.2-debian12 --optional-components ZEPPELIN --labels type=spark-learning --project marine-cable-436701-t7
+``` 
 
 (Side note: I completely missed enabling Preemptible VMs haha. But I am recommended to experiment with the current cluster and then later set up a more cost-optimized cluster using preemptible VMs once I'm ready for larger-scale or production-like scenarios.)
 
 Once the cluster had been created and provisioned, Cloud Resource Manager API needed to be enabled. 
 
 Before writing the Spark job, the Cloud Storage for the raw data is created:
+
 #### Setting up the raw data Cloud Storage
+
 (I love that they are called buckets in GCP as well haha)  
 
 A bucket called `my-stock-data-bucket` is created where folders and prefixes will be used to achieve the following structure:  
@@ -85,12 +97,13 @@ my-stock-data-bucket/
    └── processed-data/
          └── (processed files from Spark, e.g., processed-stock-data.csv)
 ```
-eu-north1 (Finland) is chosen as region (Finland is close enough to Sweden I guess hahaha). Otherwise, default values are used.  
+Once again, eu-north1 (Finland) is chosen as region (Finland is close enough to Sweden I guess hahaha). Otherwise, default values are used.  
 
 With the bucket created, next up is writing the Spark job:
 
 ### Writing the Spark job
-Hi!
+
+BOBO!
 
 ### Data Processing and Analysis
 
