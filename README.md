@@ -52,7 +52,9 @@ Cloud Composer (Airflow):
 ### Data Ingestion from Alpha Vantage
 
 #### Setting up the Cloud Dataproc Cluster
-A Cloud Dataproc Cluster with Apache Spark is created to run the PySpark jobs. To avoid Kubernetes and containerization (for now haha), the cluster is created on Compute Engine, and to get familiar with Dataproc and Spark, Single Node is chosen rather than Standard. (However, I am stepping out of my Ubuntu comfort bubble and diving into Debian!) Default configurations are used with no Spark performance enhancements, and no Dataproc Metastore will not be used. Zeppelin is chosen over Jupyter (the one I have experience using haha) since it is more geared towards Big Data! To put the focus on writign PySpark jobs and working in Zeppelin, everything is left to default values in Configure nodes, Customize cluster and Manage security.  
+A Cloud Dataproc Cluster with Apache Spark is created to run the PySpark jobs. To avoid Kubernetes and containerization (for now haha), the cluster is created on Compute Engine, and to get familiar with Dataproc and Spark, Single Node is chosen rather than Standard. (However, I am stepping out of my Ubuntu comfort bubble and diving into Debian!)  
+
+Default configurations are used with no Spark performance enhancements, and no Dataproc Metastore will not be used. Zeppelin is chosen over Jupyter (the one I have experience using haha) since it is more geared towards Big Data! To put the focus on writign PySpark jobs and working in Zeppelin, everything is left to default values in Configure nodes, Customize cluster and Manage security.  
 
 The equivalent gcloud command line is:
 ```
