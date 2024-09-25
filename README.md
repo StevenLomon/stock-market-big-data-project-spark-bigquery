@@ -125,7 +125,41 @@ The *final* gcloud command line:
 gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 250 --image-version 2.2-debian12 --optional-components ZEPPELIN --labels type=spark-learning --initialization-actions 'gs://my-shell-scripts/install-python-3-9.sh' --project marine-cable-436701-t7
 ```
 
-The cluster is now created without error but there is still a dependency error in Zeppelin. The problem is that Zeppelin is not pointing to the Python 3.9 package that we installed on the cluster. Simply going to Interpreters and setting zeppelin.python to `usr/bin/python3.9` under Properties did not work. To find out where Python was installed, SSH was used to access the Master Node. Running `which python3.9` did indeed reveal that Python 3.9 is installed at `/usr/local/bin/python3.9`. This was set as the value for zeppelin.python and everything was working.
+The cluster is now created without error but there is still a dependency error in Zeppelin. The problem is that Zeppelin is not pointing to the Python 3.9 package that we installed on the cluster. Simply going to Interpreters and setting zeppelin.python to `usr/bin/python3.9` under Properties did not work. To find out where Python was installed, SSH was used to access the Master Node. Running `which python3.9` did indeed reveal that Python 3.9 is installed at `/usr/local/bin/python3.9`. This was set as the value for zeppelin.python which fixed the issue of Python not working as an interpreter.
+
+But the problem of PySpark not being installed and also pip not being recognized still had to be addressed. This is resolved by manually installing PySpark in the Master node: 
+```
+# Installing
+sudo /usr/local/bin/python3.9 -m pip install pyspark
+
+# Verifying
+/usr/local/bin/python3.9 -m pip show pyspark
+```
+
+With this, there were no errors preventing SparkSession from being imported or the Spark session being initialized. But there was still an error in different versions:
+"""
+pyspark.errors.exceptions.base.PySparkRuntimeError: [PYTHON_VERSION_MISMATCH] Python in worker has different version (3, 11) than that in driver 3.9, PySpark cannot run with different minor versions.
+Please check environment variables PYSPARK_PYTHON and PYSPARK_DRIVER_PYTHON are correctly set.
+"""
+The proposed fix: Set the spark environment variables in Zeppelin in the Interpreter settings
+```
+PYSPARK_PYTHON = /usr/local/bin/python3.9
+PYSPARK_DRIVER_PYTHON = /usr/local/bin/python3.9
+
+```
+This was verified with the following lines of code at the top of the notebook:
+```
+%python
+
+import os
+print("PYSPARK_PYTHON:", os.environ.get('PYSPARK_PYTHON'))
+print("PYSPARK_DRIVER_PYTHON:", os.environ.get('PYSPARK_DRIVER_PYTHON'))
+
+```
+
+(It was not as easy as just setting the environment variables :') I was stuck here for at least an hour trying to set them and even creating a new custom interpreter but nothing was working)
+
+The actual fix: Re-crate the cluster as a multi-node cluster with the environment variables in the shell script.
 
 ### Data Processing and Analysis
 
