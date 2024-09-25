@@ -54,8 +54,8 @@ Cloud Composer (Airflow):
 
 ### Data Ingestion from Alpha Vantage
 
-#### Getting API key and storing it in Secret Manager
-A free API key was generated on the Alpha Vantage site. To store it in Secret Manager (the GCP equivalent to AWS Secrets Manager), the Secret Manager API first had to be enabled. A secret is created with the name `alpha-vantage-api-key` and will be accessed by Dataproc, which is able to do so by having the Secret Manager Secret Accessor role attached to its service account.
+#### Getting the API key and storing it in Secret Manager
+A free API key was generated on the Alpha Vantage site. To store it in Secret Manager (the GCP equivalent to AWS Secrets Manager), the Secret Manager API first had to be enabled. A secret is created with the name `alpha-vantage-api-key` and will be accessed by Dataproc, which is able to do so by having the Secret Manager Secret Accessor role attached to its service account. All default values are used.
 
 #### Setting up the Cloud Dataproc Cluster
 A Cloud Dataproc Cluster with Apache Spark is created to run the PySpark jobs. To avoid Kubernetes and containerization (for now haha), the cluster is created on Compute Engine, and to get familiar with Dataproc and Spark, Single Node is chosen rather than Standard. (However, I am stepping out of my Ubuntu comfort bubble and diving into Debian!) Since europe-north1 caused a bunch of trouble (I assume due to free trial limitations. See more down below on errors), us-central1 is chosen as region. 
@@ -97,13 +97,17 @@ my-stock-data-bucket/
    └── processed-data/
          └── (processed files from Spark, e.g., processed-stock-data.csv)
 ```
-Once again, eu-north1 (Finland) is chosen as region (Finland is close enough to Sweden I guess hahaha). Otherwise, default values are used.  
+Once again, us-central1 is chosen as region. Otherwise, default values are used.  
 
 With the bucket created, next up is writing the Spark job:
 
 ### Writing the Spark job
 
-BOBO!
+(A Spark job for our newly created cluster with the name `stock-market-spark-job1` is created. us-central1 is set as region and PySpark as Job type. NOPE. This is not what we're doing at all haha, this is when you have production-ready code and want to submit it to the cluster.)
+
+From the cluster interface, Zeppelin is accessed via 'Web Interfaces'. A new note called `alpha-vantage-spark-job` is created with python as the Default interpreter. Here a rather big error is encountered: pyspark is not in the list of interpreters. Fix: Re-create the cluster and make sure that PySpark is included in the "Optional Components" section.
+
+With PySpark now included, 
 
 ### Data Processing and Analysis
 
