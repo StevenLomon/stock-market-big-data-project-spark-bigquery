@@ -71,6 +71,27 @@ Two errors arose when clicking 'Create'.
 
 Once the cluster had been created and provisioned, Cloud Resource Manager API needed to be enabled. 
 
+Before writing the Spark job, the Cloud Storage for the raw data is created:
+#### Setting up the raw data Cloud Storage
+(I love that they are called buckets in GCP as well haha)  
+
+A bucket called `my-stock-data-bucket` is created where folders and prefixes will be used to achieve the following structure:  
+```
+my-stock-data-bucket/
+   |
+   ├── raw-data/
+   |     └── (files from Alpha Vantage API, e.g., raw-stock-data.csv)
+   |
+   └── processed-data/
+         └── (processed files from Spark, e.g., processed-stock-data.csv)
+```
+eu-north1 (Finland) is chosen as region (Finland is close enough to Sweden I guess hahaha). Otherwise, default values are used.  
+
+With the bucket created, next up is writing the Spark job:
+
+### Writing the Spark job
+Hi!
+
 ### Data Processing and Analysis
 
 ### Orchastration with Apache Airflow
