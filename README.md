@@ -105,9 +105,13 @@ With the bucket created, next up is writing the Spark job:
 
 (A Spark job for our newly created cluster with the name `stock-market-spark-job1` is created. us-central1 is set as region and PySpark as Job type. NOPE. This is not what we're doing at all haha, this is when you have production-ready code and want to submit it to the cluster.)
 
-From the cluster interface, Zeppelin is accessed via 'Web Interfaces'. A new note called `alpha-vantage-spark-job` is created with python as the Default interpreter. Here a rather big error is encountered: pyspark is not in the list of interpreters. Fix: Re-create the cluster and make sure that PySpark is included in the "Optional Components" section.
+From the cluster interface, Zeppelin is accessed via 'Web Interfaces'. A new note called `alpha-vantage-spark-job` is created with python as the Default interpreter. Here a rather big error is encountered: pyspark is not in the list of interpreters. 
 
-With PySpark now included, 
+Proposed fix: Re-create the cluster and make sure that PySpark is included in the "Optional Components" section.  
+Problem: There is no "PySpark" in the list of Optional components haha. ChatGPT also thought that the problem could lie in Component Gateway not being enabled but that checkbox was never unchecked during any of the cluster creation processes so that's not the problem either. %pyspark should be included in the spark interpreter but using that as the Default interpreter led to errors like this where the interpreter is trying to interpret the code in Scala or Java:
+![Interpreter errors in Zeppelin](/screenshots/Skärmbild-2024-09-25%20065306.png "Interpreter errors in Zeppelin")
+
+The actual fix: Use Python as the Default interpreter and import PySpark manually in Python.
 
 ### Data Processing and Analysis
 
