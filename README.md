@@ -63,6 +63,10 @@ The equivalent gcloud command line is:
 gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --no-address --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 500 --image-version 2.2-debian12 --optional-components ZEPPELIN --project marine-cable-436701-t7
 ``` 
 
+Two errors arose when clicking 'Create'.
+1. 500 GB is requested but the project quota only allows for 250 GB. Fix: The Primary disk size is set to 250 GB. 
+2. The cluster is set to internal IPs only but the subnetwork does not have Private Google Access enabled. Fix: Internal IP only is unchecked. This is the simplest solution and using public IPs for now is fine for development.
+
 ### Data Processing and Analysis
 
 ### Orchastration with Apache Airflow
