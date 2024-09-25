@@ -111,7 +111,7 @@ Proposed fix: Re-create the cluster and make sure that PySpark is included in th
 Problem: There is no "PySpark" in the list of Optional components haha. ChatGPT also thought that the problem could lie in Component Gateway not being enabled but that checkbox was never unchecked during any of the cluster creation processes so that's not the problem either. %pyspark should be included in the spark interpreter but using that as the Default interpreter led to errors like this where the interpreter is trying to interpret the code in Scala or Java:
 ![Interpreter errors in Zeppelin](/screenshots/Skärmbild-2024-09-25%20065306.png "Interpreter errors in Zeppelin")
 
-The actual fix: Use Python as the Default interpreter and import PySpark manually in Python.
+The actual fix: Use Python as the Default interpreter and import PySpark manually in Python. This introduced yet another problem haha: a mismatch between Python versions or dependencies. Fix: Use an initialization action to install Python 3.8 on the Dataproc cluster as part of the cluster creation process. To do this, [a bash script is written](/install-python-3-8.sh) and uploaded to Cloud Storage in order to be referenced during the Cluster creation process
 
 ### Data Processing and Analysis
 
