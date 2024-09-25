@@ -30,7 +30,9 @@ Overall, for small-scale testing and development, you can stay within the free t
 ### Setting up IAM
 (My very first question was "Does GCP have any equivalent to AWS IAM?" Indeed it does and it even shares the same name haha!)  
 
-In IAM, the first step is to assign appropriate permissions to manage the project. The Google account used to manage the project is granted the Editor role, which allows it to create, modify, and delete resources within the project. This ensures the necessary permissions for project administration without creating a separate IAM User account, as is done in AWS. Separate service accounts for Dataproc, BigQuery and Cloud Composer are also created since these services will interact with Google Cloud Storage and other resources. (We can think of service accounts like "robots" or "identities" that represent the applications, allowing them to interact with GCP services with the necessary permissions.) The following roles were assigned to each service account:  
+In IAM, the first step is to assign appropriate permissions to manage the project. The Google account used to manage the project is granted the Editor role, which allows it to create, modify, and delete resources within the project. This ensures the necessary permissions for project administration without creating a separate IAM User account, as is done in AWS.
+
+Separate service accounts for Dataproc, BigQuery and Cloud Composer are also created since these services will interact with Google Cloud Storage and other resources. (We can think of service accounts like "robots" or "identities" that represent the applications, allowing them to interact with GCP services with the necessary permissions.) The following roles were assigned to each service account:  
 
 Dataproc:  
 * Dataproc Worker: Grants permissions to run Dataproc jobs.
