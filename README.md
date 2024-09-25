@@ -111,7 +111,12 @@ Proposed fix: Re-create the cluster and make sure that PySpark is included in th
 Problem: There is no "PySpark" in the list of Optional components haha. ChatGPT also thought that the problem could lie in Component Gateway not being enabled but that checkbox was never unchecked during any of the cluster creation processes so that's not the problem either. %pyspark should be included in the spark interpreter but using that as the Default interpreter led to errors like this where the interpreter is trying to interpret the code in Scala or Java:
 ![Interpreter errors in Zeppelin](/screenshots/Skärmbild-2024-09-25%20065306.png "Interpreter errors in Zeppelin")
 
-The actual fix: Use Python as the Default interpreter and import PySpark manually in Python. This introduced yet another problem haha: a mismatch between Python versions or dependencies. Fix: Use an initialization action to install Python 3.8 on the Dataproc cluster as part of the cluster creation process. To do this, [a bash script is written](/install-python-3-8.sh) and uploaded to Cloud Storage in order to be referenced during the Cluster creation process
+The actual fix: Use Python as the Default interpreter and import PySpark manually in Python. This introduced yet another problem haha: a mismatch between Python versions or dependencies. Fix: Use an initialization action to install Python 3.8 on the Dataproc cluster as part of the cluster creation process. To do this, [a bash script is written](/install-python-3-8.sh) and uploaded to Cloud Storage. The shell script is now accessed under Initialization actions in the cluster creation process via `my-shell-scripts/install-python-3-8.sh`.
+
+The updated gcloud command line is now:
+```
+gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --single-node --master-machine-type n2-standard-4 --master-boot-disk-type pd-balanced --master-boot-disk-size 250 --image-version 2.2-debian12 --optional-components ZEPPELIN --labels type=spark-learning --initialization-actions 'gs://my-shell-scripts/install-python-3-8.sh' --project marine-cable-436701-t7
+```
 
 ### Data Processing and Analysis
 
