@@ -159,7 +159,10 @@ print("PYSPARK_DRIVER_PYTHON:", os.environ.get('PYSPARK_DRIVER_PYTHON'))
 
 (It was not as easy as just setting the environment variables :') I was stuck here for at least an hour trying to set them and even creating a new custom interpreter but nothing was working)
 
-The actual fix: Re-crate the cluster as a multi-node cluster with the environment variables in the shell script.
+The actual fix: Re-crate the cluster as a multi-node cluster with the environment variables in the shell script.  
+In a multi-node cluster, there are distinct driver and worker nodes, which makes it easier to ensure consistency when setting environment variables like PYSPARK_PYTHON and PYSPARK_DRIVER_PYTHON. In a Single Node setup, the master is both the driver and the worker, which can sometimes cause issues if configurations don’t propagate correctly between these roles.
+
+The shell script was updated, uploaded to the shell scripts bucket and used in the Initialized Actions. 
 
 ### Data Processing and Analysis
 
