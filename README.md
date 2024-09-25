@@ -162,7 +162,16 @@ print("PYSPARK_DRIVER_PYTHON:", os.environ.get('PYSPARK_DRIVER_PYTHON'))
 The actual fix: Re-crate the cluster as a multi-node cluster with the environment variables in the shell script.  
 In a multi-node cluster, there are distinct driver and worker nodes, which makes it easier to ensure consistency when setting environment variables like PYSPARK_PYTHON and PYSPARK_DRIVER_PYTHON. In a Single Node setup, the master is both the driver and the worker, which can sometimes cause issues if configurations don’t propagate correctly between these roles.
 
-The shell script was updated, uploaded to the shell scripts bucket and used in the Initialized Actions. 
+The disk size for the Master Node is set to 50 GB and each of the two worker node has a disk size of 75 GB, totaling to 250 GB. The shell script was updated, uploaded to the shell scripts bucket and used in the Initialized Actions. 
+
+When trying to create this Cluster, there was an error saying the CPU quota is being hit. The fix: Use a smaller machine type. The machine type for both master node and worker nodes is set to `n1-standard-2`. Preemptible workers (also Secondary workers or Spot VMs) are also enabled; 1 with 50 GB disk size. (With this I also had to change the CPU of the master and worker node, it was a whole puzzle to have everything not exceed the quota haha. Zone f instead of zone a was also chosen due to there not being enough resources in zone a)
+
+The *actual final* gcloud command line:
+```
+gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --zone us-central1-f --master-machine-type n1-standard-2 --master-boot-disk-type pd-balanced --master-boot-disk-size 50 --num-workers 2 --worker-machine-type n1-standard-2 --worker-boot-disk-type pd-balanced --worker-boot-disk-size 75 --num-secondary-workers 1 --secondary-worker-boot-disk-type --secondary-worker-boot-disk-size 50 --num-secondary-worker-local-ssds 0 --image-version 2.2-debian12 --optional-components ZEPPELIN --labels type=spark-learning --initialization-actions 'gs://my-shell-scripts/install-python-3-9-and-set-env.sh' --secondary-worker-type spot --project marine-cable-436701-t7
+```
+
+This created the cluster but back in Zeppelin... the environment variables are still not set correctly :')
 
 ### Data Processing and Analysis
 
