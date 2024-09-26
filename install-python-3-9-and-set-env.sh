@@ -16,8 +16,8 @@ curl https://bootstrap.pypa.io/get-pip.py | sudo python3.9
 # Install PySpark using pip for Python 3.9
 sudo /usr/local/bin/python3.9 -m pip install pyspark
 
-# Install Jupyter and IPython dependencies
-sudo /usr/local/bin/python3.9 -m pip install jupyter jupyter-client ipython
+# Install PySpark, Jupyter, IPython, and Google Cloud libraries
+sudo /usr/local/bin/python3.9 -m pip install pyspark jupyter ipython google-auth google-cloud-secret-manager
 
 # Set environment variables to use Python 3.9 for both driver and workers
 echo "export PYSPARK_PYTHON=/usr/local/bin/python3.9" | sudo tee -a /etc/environment

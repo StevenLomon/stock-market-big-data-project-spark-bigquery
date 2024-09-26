@@ -191,7 +191,13 @@ And with this... it finally worked. I was so happy I could cry :')
 ![PySpark in Zeppelin finally working](/screenshots/Skärmbild-2024-09-26%20094631.png "PySpark in Zeppelin finally working")
 
 #### Actually Writing the Spark job in Zeppelin
-The API key was gathered from Secret Manager
+When trying to fetch the API key from Secret Manager using Python, an error that was simple to overcome revealed itself: ModuleNotFoundError: No module named 'google'. Fix: SSH into the Master node and install Google Cloud SDK:
+```
+# Install google-auth and google-cloud-secret-manager for Python 3.9
+sudo /usr/local/bin/python3.9 -m pip install google-auth google-cloud-secret-manager
+```
+
+The installation is automated by including the pip install in the shell script that is used with Initialized Actions
 
 ### Data Processing and Analysis
 
