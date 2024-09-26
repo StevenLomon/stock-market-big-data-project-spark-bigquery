@@ -242,7 +242,14 @@ The solution to this is to fetch, clean and prepare the data all in Python for f
 
 The other slightly bigger hurdle was that the pyspark kept compalining that `pyspark.errors.exceptions.base.PySparkTypeError: [CANNOT_INFER_SCHEMA_FOR_TYPE] Can not infer schema for type: `set`.` This turned out to stem from the fact that in the change in interpreter from Python and PySpark, the type of the items turned out not to be a list of dicts but instead a `py4j.java_collections.JavaList` of `<class 'py4j.java_collections.JavaMap'>`. The solution with this insight was simply to use a helper funciton to convert these back to data types that Spark could work with.
 
-A PySpark DataFrame is then created from the processed data. 
+A PySpark DataFrame is then created from the processed data. With this, code for storing both the raw data and the processed data in Cloud Storage is written:
+
+#### Storing raw and processed data in Cloud Storage
+The only hurdle here was Zeppelin not recognizing storage from google.cloud which is easily fixed by pip installing it in the Master node. The shell script is also updated to reflect this and automate this pip installation for the future.
+
+From the API: "By default, outputsize=compact. Strings compact and full are accepted with the following specifications: compact returns only the latest 100 data points; full returns the full-length time series of 20+ years of historical data. The "compact" option is recommended if you would like to reduce the data size of each API call."
+
+To fully test and get a taste of big data, a run with outputsize=full is also run.
 
 ### Data Processing and Analysis
 
