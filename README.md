@@ -235,7 +235,14 @@ print(json.dumps(data, indent=1))
 }
 ```
 
-The JSON data is converted to a Spark DataFrame by first converting it to a Rows object. 
+A few other smaller hurdles appeared here as well. One of them was that the raw JSON data is interpreted different between the cells that use the Python interpreter (%python) and the ones using the PySpark interpreter (%pyspark): The variable is interpreted as a dict by Python but a list by PySpark.  
+The solution to this is to fetch, clean and prepare the data all in Python for further processing. The data is then "passed" to PySpark. To pass variables between cells using the Python interpreter and those using the PySpark interpreter, z.put() and z.get() are used. 
+
+(Before implementing to a simple solution without the use of RDD, ChatGPT did suggest converting the processed Python data to an RDD and then into a PySpark DataFrame using sc.parallelize(), which failed due to `"TypeError: cannot pickle '_thread.RLock' object"`. We don't need to manually create an RDD unless you have a specific reason to do so.)
+
+The other slightly bigger hurdle was that the pyspark kept compalining that `pyspark.errors.exceptions.base.PySparkTypeError: [CANNOT_INFER_SCHEMA_FOR_TYPE] Can not infer schema for type: `set`.` This turned out to stem from the fact that in the change in interpreter from Python and PySpark, the type of the items turned out not to be a list of dicts but instead a `py4j.java_collections.JavaList` of `<class 'py4j.java_collections.JavaMap'>`. The solution with this insight was simply to use a helper funciton to convert these back to data types that Spark could work with.
+
+A PySpark DataFrame is then created from the processed data. 
 
 ### Data Processing and Analysis
 
