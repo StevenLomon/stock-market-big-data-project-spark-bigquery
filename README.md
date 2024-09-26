@@ -201,7 +201,41 @@ The installation is automated by including the pip install in the shell script t
 
 With the Google Cloud SDK pip installed, another error arose: "google.api_core.exceptions.PermissionDenied: 403 Permission 'secretmanager.versions.access' denied for resource 'projects/1077638373331/secrets/alpha-vantage-api-key/versions/latest' (or it may not exist)." Fix: Add the `Secret Manager Secret Accessor` role to the Compute Engine default service account. 
 
-With this, the API key is successfully fetched and ready to be used. A first API call to the TIME_SREIES_DAILY endpoint to fetch Google stock data was made without errors.
+With this, the API key is successfully fetched and ready to be used. A first API call to the TIME_SREIES_DAILY endpoint to fetch Google stock data was made without errors:
+```
+%python
+import json
+print(json.dumps(data, indent=1))
+
+{
+ "Meta Data": {
+  "1. Information": "Daily Prices (open, high, low, close) and Volumes",
+  "2. Symbol": "GOOG",
+  "3. Last Refreshed": "2024-09-25",
+  "4. Output Size": "Compact",
+  "5. Time Zone": "US/Eastern"
+ },
+ "Time Series (Daily)": {
+  "2024-09-25": {
+   "1. open": "162.9700",
+   "2. high": "164.2170",
+   "3. low": "162.7750",
+   "4. close": "162.9900",
+   "5. volume": "13607892"
+  },
+  "2024-09-24": {
+   "1. open": "164.2500",
+   "2. high": "164.5500",
+   "3. low": "162.0300",
+   "4. close": "163.6400",
+   "5. volume": "18774056"
+  },
+  ...
+ }
+}
+```
+
+The JSON data is converted to a Spark DataFrame by first converting it to a Rows object. 
 
 ### Data Processing and Analysis
 
