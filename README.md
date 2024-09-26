@@ -101,7 +101,9 @@ Once again, us-central1 is chosen as region. Otherwise, default values are used.
 
 With the bucket created, next up is writing the Spark job:
 
-### Writing the Spark job
+#### Trial and ERROR in setting up the Cluster and Zeppelin
+
+(I'm writing this in retrospect: LOTS of trial and error and failing forward here. Feel free to skip this section if you don't wanna read how I overcame every bump and obstacle. There were a lof of them, I re-created my cluster like 8 times haha)
 
 (A Spark job for our newly created cluster with the name `stock-market-spark-job1` is created. us-central1 is set as region and PySpark as Job type. NOPE. This is not what we're doing at all haha, this is when you have production-ready code and want to submit it to the cluster.)
 
@@ -172,6 +174,24 @@ gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --regi
 ```
 
 This created the cluster but back in Zeppelin... the environment variables are still not set correctly :')
+
+I watched these two YouTube videos: 
+* https://www.youtube.com/watch?v=xM8hOdT04po
+* https://www.youtube.com/watch?v=FVU6276clBs
+They suggested that it should be as simple as creating a notebook with spark as the default interpreter and putting %pyspark at the top. Trying to do this, and watching the failure logs, revealed two issues:
+1. "IPython requirement is not met, checkKernelPrerequisiteResult: jupyter-client is not installed, installed packages:" Fix: Install Jupyter and IPython Dependencies. This was included in the updated shell script
+2. The error code 143 suggested that Zeppelin or Spark is running out of resources or timing out. Fix: Going back to 1 master node of 50 GB and 2 workers nodes of 100 GB. All three on n2-standard-2
+
+The *for real now actual final* gcloud command line:
+```
+gcloud dataproc clusters create alpha-vantage1 --enable-component-gateway --region us-central1 --master-machine-type n2-standard-2 --master-boot-disk-type pd-balanced --master-boot-disk-size 50 --num-workers 2 --worker-machine-type n2-standard-2 --worker-boot-disk-type pd-balanced --worker-boot-disk-size 100 --image-version 2.2-debian12 --optional-components ZEPPELIN --labels type=spark-learning --initialization-actions 'gs://my-shell-scripts/install-python-3-9-and-set-env.sh' --project marine-cable-436701-t7
+```
+
+And with this... it finally worked. I was so happy I could cry :')
+![PySpark in Zeppelin finally working](/screenshots/Skärmbild-2024-09-26%20094631.png "PySpark in Zeppelin finally working")
+
+#### Actually Writing the Spark job
+The API key was gathered from Secret Manager
 
 ### Data Processing and Analysis
 
