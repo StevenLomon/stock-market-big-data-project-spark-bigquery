@@ -247,9 +247,13 @@ A PySpark DataFrame is then created from the processed data. With this, code for
 #### Storing raw and processed data in Cloud Storage
 The only hurdle here was Zeppelin not recognizing storage from google.cloud which is easily fixed by pip installing it in the Master node. The shell script is also updated to reflect this and automate this pip installation for the future.
 
+The first API fetch was of Google with outputsize not setting, leading to the default value of compact. To get a taste of big data, an API fetch with outputsize set to full was also made.  
 From the API: "By default, outputsize=compact. Strings compact and full are accepted with the following specifications: compact returns only the latest 100 data points; full returns the full-length time series of 20+ years of historical data. The "compact" option is recommended if you would like to reduce the data size of each API call."
 
-To fully test and get a taste of big data, a run with outputsize=full is also run.
+Raw and processed for the compact dataset as well as the full dataset were stored in their respective bucket with no hassle at all.
+
+#### Storing the processed data in BigQuery
+The BigQuery API is enabled
 
 ### Data Processing and Analysis
 
