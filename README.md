@@ -252,8 +252,17 @@ From the API: "By default, outputsize=compact. Strings compact and full are acce
 
 Raw and processed for the compact dataset as well as the full dataset were stored in their respective bucket with no hassle at all.
 
-#### Storing the processed data in BigQuery
-The BigQuery API is enabled
+#### Loading the processed data into BigQuery
+The BigQuery API is enabled and a dataset for the current GCP project is created. Default values are used. In order to have the Dataproc cluster write to BigQuery, the `BigQuery Data Editor` role is granted to the Compute Engine default service account. Once set, the PySpark BigQuery Connector is configured.
+
+(With one cell, the DataFrame should have been written to BigQuery but of course there's an error haha)
+When writing the DataFrame to BigQuery, there was an error saying that the specified bucket doesn't exist. Spark needs a temporary bucket when loading data into BigQuery and this bucket needs to be created and provided manually before the load. It was created with this line in the Google Cloud Shell: (I first tried to create a bucket called `google-stock-data-temp` but bucket names can't start with 'goog' haha)
+```
+gsutil mb -l us-central1 gs://stock-data-temp/
+```
+With the name being valid, there was still a permission problem. This however was easily fixed by granting the `BigQuery Job User` to the Google Engine default service account. The role is necessary because loading data into BigQuery through Spark creates a load job behind the scenes. Without this role, the service account does not have permission to create and execute these jobs in BigQuery. The `BigQuery Data Editor` is still needed in addition to this role in order to create, update and delete BigQuery tables and datasets.  
+
+With this, the processed data in the PySpark DataFrame is successfully loaded into BigQuery and ready to be queried with SQL!
 
 ### Data Processing and Analysis
 
