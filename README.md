@@ -363,7 +363,7 @@ UNION(
 ```
 With this, [the following simple report](/aapl_msft_goog.pdf) was able to be created.
 
-In Looker Studio...
+To integrate Looker Studio, a new table is instead created with volume as the focus using [this query](/bigquery-queries/create_combined_volume_data_table.sql). From BigQuery, this table can then be explored in Looker Studio by pressing 'Export' and then 'Explore in Looker Studio'. [The following simple report](/Combined_Volume_Data_GOOG_AAPL_MSFT.pdf) was able to be created.
 
 ### Orchastration with Apache Airflow
 Next is orchestrating the pipeline! By starting with Airflow/Composer, there will be a clear orchestration pipeline ready to automate with GitHub Actions. But the first step is to ensure an end-to-end data pipeline that manually can be ran and monitored using Airflow.
