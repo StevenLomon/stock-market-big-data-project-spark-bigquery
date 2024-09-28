@@ -311,12 +311,17 @@ spark.dynamicAllocation.enabled true
 spark.dynamicAllocation.minExecutors 1
 spark.dynamicAllocation.maxExecutors 3
 ```
-After running the resource-heavy cell again, it works! The three key reasons it works:
+After running the resource-heavy cell again, it works! The three key reasons it works (from ChatGPT. I am moreso focused on writing Spark jobs and getting the big picture understanding):
 1. Memory Allocation: Executors now have sufficient memory to handle the dataset, reducing the chances of running out of memory.
-2. CPU Utilization: By limiting each executor to 2 cores, you ensure that each executor is not overloaded with too many parallel tasks. This helps in controlling CPU utilization and avoiding spikes.
+2. CPU Utilization: By limiting each executor to 2 cores, it is ensured that each executor is not overloaded with too many parallel tasks. This helps in controlling CPU utilization and avoiding spikes.
 3. Dynamic Resource Management: Dynamic allocation allows the Spark application to scale up and down based on demand, preventing scenarios where there are either too few or too many executors. This leads to a more balanced and efficient use of the cluster resources.
 
-### Data Processing and Analysis
+With this configuration, the full dataset for Microsoft is also extracted from the API and loaded into BigQuery.
+
+### Data Analysis in BigQuery and Visualization in PowerBI
+[The following file](/bigquery.sql) contains all SQL queries ran on the data loaded into BigQuery to get an understanding of the data.
+
+A dashboard is created in Power BI by first connecting to the BigQuery Data Warehouse. 
 
 ### Orchastration with Apache Airflow
 
