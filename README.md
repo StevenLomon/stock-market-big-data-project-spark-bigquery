@@ -318,7 +318,7 @@ After running the resource-heavy cell again, it works! The three key reasons it 
 
 With this configuration, the full dataset for Microsoft is also extracted from the API and loaded into BigQuery.
 
-### Data Analysis in BigQuery and Visualization in PowerBI
+### Data Analysis in BigQuery
 [The following file](/bigquery.sql) contains all SQL queries ran on the data loaded into BigQuery to get an understanding of the data.
 
 It was only in the writing SQL queries stage that attention was brought to the fact that the date column is of type `STRING` which requires casting every time a query is written. To make things run smoother, the column type is being changed to `DATE`. The change is both taking place in the loading phase to ensure correct schema for future loads and on a table level to the tables that are already in the warehouse. A data warehouse is often already well established and simply deleting a table and re-loading the data is often off the table as an option since it might be very resource-heavy. Replacing an existing table can be okay for a simpler workflow if the project is still in the development or proof-of-concept phase where data is still in flux. But for production, creating a new table is recommended for data preservation and compliance.
@@ -340,6 +340,9 @@ df = spark.createDataFrame(df.rdd, schema)
 ```
 As for the tables that are already in the warehouse, they are updated with the [following query.](/bigquery-queries/update_tables_correct_query.sql). The existing queries are also updated to use the updated tables.  
 
+### Visualization in PowerBI and Looker Studio
+(Data visualization is not my strong suit at all and I don't really like either haha but for the practice!)
+
 A dashboard is created in Power BI by first connecting to the BigQuery Data Warehouse. Once signed in, the three tables with updated schemas were selected and loaded into Power BI. Import is very straightforward option and a more advanced option is DirectQuery (I tried this to get some hands-on experience) It is a great option:
 * When data is too large to fit into memory (e.g., multi-gigabyte or terabyte datasets).
 * When real-time data access is required (e.g., monitoring dashboards with real-time metrics).
@@ -349,7 +352,7 @@ A dashboard is created in Power BI by first connecting to the BigQuery Data Ware
 * Analytical use cases where historical trends are combined with up-to-date data.
 * When multiple users are accessing and querying the data simultaneously and do not need offline capabilities.
 
-(Data visualization is not my strong suit at all and I don't really like either haha but) A simple line chart is created displaying the close value for all three companies over time. To achieve this, Power BI needs to know the relationship and cardinality between the tables. A Date Table (also Calendar Table) is created that contains all the unique dates present in the dataset. It will serve as the central reference for each othe three stock tables. In the Modeling tab, New Table is selected and the following DAX expression is used to generate the Date Table:
+A simple line chart is created displaying the close value for all three companies over time. To achieve this, Power BI needs to know the relationship and cardinality between the tables. A Date Table (also Calendar Table) is created that contains all the unique dates present in the dataset. It will serve as the central reference for each othe three stock tables. In the Modeling tab, New Table is selected and the following DAX expression is used to generate the Date Table:
 ```
 CombinedStockData = 
 UNION(
@@ -360,7 +363,12 @@ UNION(
 ```
 With this, [the following simple report](/aapl_msft_goog.pdf) was able to be created.
 
+In Looker Studio...
+
 ### Orchastration with Apache Airflow
+Next is orchestrating the pipeline! By starting with Airflow/Composer, there will be a clear orchestration pipeline ready to automate with GitHub Actions. But the first step is to ensure an end-to-end data pipeline that manually can be ran and monitored using Airflow.
+
+To start off, the Cloud Composer API is enabled. 
 
 ### Automation with GitHub Actions
 
