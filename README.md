@@ -311,7 +311,10 @@ spark.dynamicAllocation.enabled true
 spark.dynamicAllocation.minExecutors 1
 spark.dynamicAllocation.maxExecutors 3
 ```
-After running the resource-heavy cell again...
+After running the resource-heavy cell again, it works! The three key reasons it works:
+1. Memory Allocation: Executors now have sufficient memory to handle the dataset, reducing the chances of running out of memory.
+2. CPU Utilization: By limiting each executor to 2 cores, you ensure that each executor is not overloaded with too many parallel tasks. This helps in controlling CPU utilization and avoiding spikes.
+3. Dynamic Resource Management: Dynamic allocation allows the Spark application to scale up and down based on demand, preventing scenarios where there are either too few or too many executors. This leads to a more balanced and efficient use of the cluster resources.
 
 ### Data Processing and Analysis
 
