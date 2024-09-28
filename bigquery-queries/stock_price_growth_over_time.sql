@@ -13,20 +13,20 @@ WITH price_growth AS (
     MAX(close) AS max_close,
     MIN(close) AS min_close,
     (MAX(close) - MIN(close)) / MIN(close) * 100 AS growth_percentage
-  FROM `stock_market_data.google_stock_data`
+  FROM `stock_market_data.google_stock_data_v2`
   UNION ALL
   SELECT 
     'Microsoft' AS company,
     MAX(close) AS max_close,
     MIN(close) AS min_close,
     (MAX(close) - MIN(close)) / MIN(close) * 100 AS growth_percentage
-  FROM `stock_market_data.microsoft_stock_data`
+  FROM `stock_market_data.microsoft_stock_data_v2`
   UNION ALL
   SELECT 
     'Apple' AS company,
     MAX(close) AS max_close,
     MIN(close) AS min_close,
     (MAX(close) - MIN(close)) / MIN(close) * 100 AS growth_percentage
-  FROM `stock_market_data.apple_stock_data`
+  FROM `stock_market_data.apple_stock_data_v2`
 )
 SELECT * FROM price_growth ORDER BY price_growth.growth_percentage DESC;
