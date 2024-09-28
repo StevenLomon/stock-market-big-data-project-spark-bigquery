@@ -338,9 +338,27 @@ schema = StructType([
 # Apply the schema to your existing DataFrame (assuming the DataFrame is named `df`)
 df = spark.createDataFrame(df.rdd, schema)
 ```
-As for the tables that are already in the warehouse, they are updated with the [following query.](/bigquery-queries/update_tables_correct_query.sql)
+As for the tables that are already in the warehouse, they are updated with the [following query.](/bigquery-queries/update_tables_correct_query.sql). The existing queries are also updated to use the updated tables.  
 
-A dashboard is created in Power BI by first connecting to the BigQuery Data Warehouse. 
+A dashboard is created in Power BI by first connecting to the BigQuery Data Warehouse. Once signed in, the three tables with updated schemas were selected and loaded into Power BI. Import is very straightforward option and a more advanced option is DirectQuery (I tried this to get some hands-on experience) It is a great option:
+* When data is too large to fit into memory (e.g., multi-gigabyte or terabyte datasets).
+* When real-time data access is required (e.g., monitoring dashboards with real-time metrics).
+* When the dataset changes frequently throughout the day, and up-to-the-minute accuracy is necessary.
+* When users are querying a centralized data warehouse (like BigQuery) that is used for multiple reporting purposes across the organization.
+* For monitoring dashboards that show live data (e.g., sales performance or system health monitoring).
+* Analytical use cases where historical trends are combined with up-to-date data.
+* When multiple users are accessing and querying the data simultaneously and do not need offline capabilities.
+
+(Data visualization is not my strong suit at all and I don't really like either haha but) A simple line chart is created displaying the close value for all three companies over time. To achieve this, Power BI needs to know the relationship and cardinality between the tables. A Date Table (also Calendar Table) is created that contains all the unique dates present in the dataset. It will serve as the central reference for each othe three stock tables. In the Modeling tab, New Table is selected and the following DAX expression is used to generate the Date Table:
+```
+CombinedStockData = 
+UNION(
+  SELECTCOLUMNS('google_stock_data_v2', "date", 'google_stock_data_v2'[date], "close", 'google_stock_data_v2'[close], "company", "Google"),
+  SELECTCOLUMNS('microsoft_stock_data_v2', "date", 'microsoft_stock_data_v2'[date], "close", 'microsoft_stock_data_v2'[close], "company", "Microsoft"),
+  SELECTCOLUMNS('apple_stock_data_v2', "date", 'apple_stock_data_v2'[date], "close", 'apple_stock_data_v2'[close], "company", "Apple")
+)
+```
+With this, [the following simple report](/aapl_msft_goog.pdf) was able to be created.
 
 ### Orchastration with Apache Airflow
 
