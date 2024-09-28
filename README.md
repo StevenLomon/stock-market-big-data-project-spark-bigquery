@@ -264,6 +264,35 @@ With the name being valid, there was still a permission problem. This however wa
 
 With this, the processed data in the PySpark DataFrame is successfully loaded into BigQuery and ready to be queried with SQL!
 
+(At this point as well, when I was going to load more symbols into BigQuery, I got an HTTP ERROR 502 for the first time when trying to access Zeppelin. This is a Bad Gateway error and the fix is to SSH into the master node and run some commands to see the status of Zeppelin:
+```
+sudo systemctl status zeppelin
+```
+Huh?????? I wrote that, went back to the tab with the 502 error and refreshed it just to make sure we still need to check the status. Works fine now. Just waiting the error out works too I guess! But if it wouldn't; check the status. If it's not running, start it manually:
+```
+sudo systemctl start zeppelin
+```
+Alternatively, restart the Zeppelin service:
+```
+sudo systemctl restart zeppelin
+```
+)
+
+When trying to access the full Apple dataset that spans all the way back to 1999 (unlike the full Google dataset that only spans from 2024-05-03 to 2024-09-25), the cell timed out for the first time: `"Python process is abnormally exited, please check your code and log"`. 
+The fix first involves SSH:ing into the Master node and checking the logs:
+```
+cd /var/log/zeppelin/
+cat zeppelin-zeppelin-alpha-vantage1-m.log
+```
+Inspecting the logs revealed that the processed exited with code `143` meaning that the process was terminated by a `SIGTERM` signal, typically due to memory or resource limitations or timeout issues. To find out specifically what caused the SIGTERM termination, the YARN ResourceManager logs are also checked. This is also done by SSH:ing into the Master node:
+```
+cd /var/log/hadoop-yarn/
+cat hadoop-yarn-timelineserver-alpha-vantage1-m.log
+```
+The YARN logs just revealed that something is failing but not what. Going to the Spark History Server to find the bucket location for the logs and inspecting the final rows the spark-job-history logs, there is a key entry that revealed that it is most likely a resource management issue rather than a timeout: `{"Event":"SparkListenerExecutorRemoved","Timestamp":...,"Executor ID":"4","Removed Reason":"Executor killed by driver."}`  
+
+To really confirm this, Cloud Monitoring is used: 
+
 ### Data Processing and Analysis
 
 ### Orchastration with Apache Airflow
