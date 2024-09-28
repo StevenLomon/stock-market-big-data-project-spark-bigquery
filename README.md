@@ -294,6 +294,8 @@ The YARN logs just revealed that something is failing but not what. Going to the
 To really confirm this, Cloud Monitoring is used. Tinkering around in the Metrics explorer, adding a query targeting our Dataproc cluster and a query monitoring CPU usage, it was made clear that there was a spike in CPU usage:
 ![CPU spike dashboard from Metrics explorer](/screenshots/Cluster-capacity-deviation-[SUM]-VM-Instance-CPU-utilization-[MEAN].png "CPU spike dashboard from Metrics explorer")
 
+The CPU issue is fixed by...
+
 ### Data Processing and Analysis
 
 ### Orchastration with Apache Airflow
