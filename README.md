@@ -291,7 +291,8 @@ cat hadoop-yarn-timelineserver-alpha-vantage1-m.log
 ```
 The YARN logs just revealed that something is failing but not what. Going to the Spark History Server to find the bucket location for the logs and inspecting the final rows the spark-job-history logs, there is a key entry that revealed that it is most likely a resource management issue rather than a timeout: `{"Event":"SparkListenerExecutorRemoved","Timestamp":...,"Executor ID":"4","Removed Reason":"Executor killed by driver."}`  
 
-To really confirm this, Cloud Monitoring is used: 
+To really confirm this, Cloud Monitoring is used. Tinkering around in the Metrics explorer, adding a query targeting our Dataproc cluster and a query monitoring CPU usage, it was made clear that there was a spike in CPU usage:
+![CPU spike dashboard from Metrics explorer](/screenshots/Cluster-capacity-deviation-[SUM]-VM-Instance-CPU-utilization-[MEAN].png "CPU spike dashboard from Metrics explorer")
 
 ### Data Processing and Analysis
 
