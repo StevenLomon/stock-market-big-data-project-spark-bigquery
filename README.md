@@ -319,7 +319,7 @@ After running the resource-heavy cell again, it works! The three key reasons it 
 With this configuration, the full dataset for Microsoft is also extracted from the API and loaded into BigQuery.
 
 ### Data Analysis in BigQuery
-[The following file](/bigquery.sql) contains all SQL queries ran on the data loaded into BigQuery to get an understanding of the data.
+[The following directory](/bigquery-queries/) contains all SQL queries ran on the data loaded into BigQuery to get an understanding of the data.
 
 It was only in the writing SQL queries stage that attention was brought to the fact that the date column is of type `STRING` which requires casting every time a query is written. To make things run smoother, the column type is being changed to `DATE`. The change is both taking place in the loading phase to ensure correct schema for future loads and on a table level to the tables that are already in the warehouse. A data warehouse is often already well established and simply deleting a table and re-loading the data is often off the table as an option since it might be very resource-heavy. Replacing an existing table can be okay for a simpler workflow if the project is still in the development or proof-of-concept phase where data is still in flux. But for production, creating a new table is recommended for data preservation and compliance.
 
