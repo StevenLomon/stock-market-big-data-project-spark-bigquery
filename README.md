@@ -321,6 +321,25 @@ With this configuration, the full dataset for Microsoft is also extracted from t
 ### Data Analysis in BigQuery and Visualization in PowerBI
 [The following file](/bigquery.sql) contains all SQL queries ran on the data loaded into BigQuery to get an understanding of the data.
 
+It was only in the writing SQL queries stage that attention was brought to the fact that the date column is of type `STRING` which requires casting every time a query is written. To make things run smoother, the column type is being changed to `DATE`. The change is both taking place in the loading phase to ensure correct schema for future loads and on a table level to the tables that are already in the warehouse. A data warehouse is often already well established and simply deleting a table and re-loading the data is often off the table as an option since it might be very resource-heavy. Replacing an existing table can be okay for a simpler workflow if the project is still in the development or proof-of-concept phase where data is still in flux. But for production, creating a new table is recommended for data preservation and compliance.
+
+The following code is added in between setting the configuration options for the BigQuery connector and writing the DataFrame to BigQuery to ensure correct for schema for future loading into the warehouse:
+```
+# Define the schema explicitly
+schema = StructType([
+    StructField("date", DateType(), True),
+    StructField("open", FloatType(), True),
+    StructField("high", FloatType(), True),
+    StructField("low", FloatType(), True),
+    StructField("close", FloatType(), True),
+    StructField("volume", IntegerType(), True)
+])
+
+# Apply the schema to your existing DataFrame (assuming the DataFrame is named `df`)
+df = spark.createDataFrame(df.rdd, schema)
+```
+As for the tables that are already in the warehouse, they are updated with the [following query.](/bigquery-queries/update_tables_correct_query.sql)
+
 A dashboard is created in Power BI by first connecting to the BigQuery Data Warehouse. 
 
 ### Orchastration with Apache Airflow
