@@ -294,7 +294,24 @@ The YARN logs just revealed that something is failing but not what. Going to the
 To really confirm this, Cloud Monitoring is used. Tinkering around in the Metrics explorer, adding a query targeting our Dataproc cluster and a query monitoring CPU usage, it was made clear that there was a spike in CPU usage:
 ![CPU spike dashboard from Metrics explorer](/screenshots/Cluster-capacity-deviation-[SUM]-VM-Instance-CPU-utilization-[MEAN].png "CPU spike dashboard from Metrics explorer")
 
-The CPU issue is fixed by...
+The CPU usage issue during the processing of large datasets can be addressed in one of two ways:
+1. Optimize the Spark Configuration: By adjusting Spark settings such as spark.executor.memory, spark.driver.memory, spark.executor.cores, and others, the efficiency of resource utilization within the existing cluster can be improved. This will allow the current setup to handle more computationally intensive tasks without additional hardware.
+2. Scale Up or Scale Out: If configuration changes alone are insufficient, the alternative is to increase available resources by adding more workers (scaling out) or upgrading the machine type to provide more CPUs and memory per node (scaling up).
+
+To test the limits of the current setup, the following configuration is added as a cell in the Zeppelin notebook above the resource-heavy cell and run before it:
+```
+%spark.conf
+spark.executor.memory 3g
+spark.driver.memory 2g
+spark.executor.cores 2
+spark.executor.instances 2
+spark.sql.shuffle.partitions 5
+spark.default.parallelism 5
+spark.dynamicAllocation.enabled true
+spark.dynamicAllocation.minExecutors 1
+spark.dynamicAllocation.maxExecutors 3
+```
+After running the resource-heavy cell again...
 
 ### Data Processing and Analysis
 
