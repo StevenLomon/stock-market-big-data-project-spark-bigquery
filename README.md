@@ -368,7 +368,9 @@ To integrate Looker Studio, a new table is instead created with volume as the fo
 ### Orchastration with Apache Airflow
 Next is orchestrating the pipeline! By starting with Airflow/Composer, there will be a clear orchestration pipeline ready to automate with GitHub Actions. But the first step is to ensure an end-to-end data pipeline that manually can be ran and monitored using Airflow.
 
-To start off, the Cloud Composer API is enabled. 
+To start off, the Cloud Composer API is enabled. Composer 3 is chosen over Composer 2 since it builds on the functionalities of its predecessors while simplifying some configuration and management aspects. The latest default Image version is chosen and as for Environment resource size, Medium is chosen. It gives enough headroom to handle commoon Airflow tasks without hitting resource contratints too quickly. It also provides a good balance between cost and resource availability for most use cases, including DAG scheduling, task execution, and monitoring.
+
+
 
 ### Automation with GitHub Actions
 
