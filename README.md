@@ -365,13 +365,13 @@ With this, [the following simple report](/aapl_msft_goog.pdf) was able to be cre
 
 To integrate Looker Studio, a new table is instead created with volume as the focus using [this query](/bigquery-queries/create_combined_volume_data_table.sql). From BigQuery, this table can then be explored in Looker Studio by pressing 'Export' and then 'Explore in Looker Studio'. [The following simple report](/Combined_Volume_Data_GOOG_AAPL_MSFT.pdf) was able to be created.
 
-### Orchastration with Apache Airflow
+### Orchastration with Apache Airflow + Automation with GitHub Actions
 Next is orchestrating the pipeline! By starting with Airflow/Composer, there will be a clear orchestration pipeline ready to automate with GitHub Actions. But the first step is to ensure an end-to-end data pipeline that manually can be ran and monitored using Airflow.
 
 To start off, the Cloud Composer API is enabled. Composer 3 is chosen over Composer 2 since it builds on the functionalities of its predecessors while simplifying some configuration and management aspects. The latest default Image version is chosen and as for Environment resource size, Medium is chosen. It gives enough headroom to handle commoon Airflow tasks without hitting resource contratints too quickly. It also provides a good balance between cost and resource availability for most use cases, including DAG scheduling, task execution, and monitoring.
 
+The DAG is written in VSCode and at the same time, a GitHub Actions workflow is written. This ensures that the code is automatically tested and, if passed, deployed to Composer whenever there are pushes to the `main` branch. (This is my first time using any sort of CI/CD workflow so it's completely new and uncomfortable but the only focus is to just fail forward!!)
 
 
-### Automation with GitHub Actions
 
 ### Infrastructure as Code with Terraform
