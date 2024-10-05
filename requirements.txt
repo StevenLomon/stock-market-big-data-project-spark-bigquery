@@ -1,0 +1,13 @@
+# Use constraints to ensure compatibility
+-c https://raw.githubusercontent.com/apache/airflow/constraints-2.10.2/constraints-3.10.txt
+
+# Airflow Core
+apache-airflow==2.10.2
+
+# Providers
+apache-airflow-providers-google==6.2.0
+apache-airflow-providers-http==2.1.0
+
+# Additional dependencies
+google-cloud-storage==2.2.1
+pylint==3.3.1  # From pypi: The latest version supports Python 3.9.0 and above.

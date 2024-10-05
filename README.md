@@ -382,5 +382,22 @@ A JSON key file of the service account is created in IAM & Admin by creating a n
 
 (Here I made a commit with GitHub Actions set up for the first time in my life. And it resulted in a very amusing wake-up call from pylint hahaha:)
 ![First GitHub Actions log](/screenshots/Skärmbild-2024-10-05%20091033.png "First GitHub Actions log")
+It's important to be aware here that ignoring too many issues can lead to accumulated technical debt, which becomes a hassle to fix later. It's reasonable to mainly focus on Functional Errors like `E0401: Unable to import 'airflow.providers.google.cloud.transfers.gcs_to_bigquery'`. It's all about finding that sweet spot!
+This specific import error is to be resolved by pip installing `apache-airflow-providers-google`. But in pip installing that another warning is brough up for attention:   
+"INFO: pip is looking at multiple versions of opentelemetry-api to determine which version is compatible with other requirements. This could take a while.
+Collecting opentelemetry-api>=1.15.0
+  Using cached opentelemetry_api-1.27.0-py3-none-any.whl (63 kB)
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+INFO: pip is looking at multiple versions of opentelemetry-api to determine which version is compatible with other requirements. This could take a while.
+INFO: pip is looking at multiple versions of numpy to determine which version is compatible with other requirements. This could take a while."
+
+The warning indicates that pip is spending extra time resolving dependencies because there are multiple versions of certain packages (e.g., opentelemetry-api and numpy) that could potentially satisfy the requirements. This happens when a package has dependencies that are not pinned to a specific version, causing pip to check all possible combinations to find a compatible set.
+This is fixed by using Airflow's `constraints.txt`; a curated list of package versions that are known to work well together for a specific version of Airflow. This list ensures compatibility across the core Airflow packages and its providers.
+With Airflow version 2.10.2 and Python version 3.10.12, the constraints URL is `https://raw.githubusercontent.com/apache/airflow/constraints-2.10.2/constraints-3.10.txt`
+The constraints URL is added to the pip install: 
+```
+pip install -r requirements.txt -c https://raw.githubusercontent.com/apache/airflow/constraints-2.10.2/constraints-3.10.txt
+```
+
 
 ### Infrastructure as Code with Terraform
