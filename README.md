@@ -380,6 +380,7 @@ The traditional method of using JSON keys is still perfectly fine for non-produc
 A JSON key file of the service account is created in IAM & Admin by creating a new service account with `Composer Administrator` and `Storage Object Admin` attached and downloading the JSON key. The contents of the key is stored as `GCP_SA_KEY` in GitHub Actions together with the project ID as `GCP_PROJECT_ID`. Both are stored as Repository secrets since they are only used for this project and this repository. 
 (This is SO MUCH EASIER)
 
-
+(Here I made a commit with GitHub Actions set up for the first time in my life. And it resulted in a very amusing wake-up call from pylint hahaha:)
+![First GitHub Actions log](/screenshots/Skärmbild-2024-10-05%20091033.png "First GitHub Actions log")
 
 ### Infrastructure as Code with Terraform
