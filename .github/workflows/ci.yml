@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies with constraints
         run: |
-          pip install -r requirements.txt -c https://raw.githubusercontent.com/apache/airflow/constraints-2.3.0/constraints-3.8.txt
+          pip install -r requirements-dev.txt
       
       - name: Lint the DAG
         run: pylint dags/*.py

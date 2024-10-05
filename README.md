@@ -408,6 +408,10 @@ The conflict is caused by:
 To fix this you could try to:
 1. loosen the range of package versions you've specified
 2. remove package versions to allow pip attempt to solve the dependency conflict"
-the pip install command ran in the terminal without problems. 
+the pip install command ran in the terminal without problems. "
+
+Further tinkering with version dependencies with the help of ChatGPT resolved all dependency issues. 
+(Here I was confused whether to keep the original requirements.txt and pip freeze an additional requirements file with everything correctly pip installed and that's actually what we do!)
+[A requirements.txt for development](/requirements-dev.txt) is created using pip freeze including the current working versions to ensure reproducibility. This is the requirements file that is used in the CI/CD pipeline. The -c flag with the constraints file is thus removed. Here is the constraints file for future refence: https://raw.githubusercontent.com/apache/airflow/constraints-2.3.0/constraints-3.8.txt  
 
 ### Infrastructure as Code with Terraform
