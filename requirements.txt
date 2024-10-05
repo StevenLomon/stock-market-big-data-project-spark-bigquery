@@ -10,4 +10,5 @@ apache-airflow-providers-http==4.13.0
 
 # Additional dependencies
 google-cloud-storage==2.18.2
-pylint==3.3.1  # From pypi: The latest version supports Python 3.9.0 and above.
+astroid==2.15.8
+pylint==2.15.8 # constraints.txt requests astroid==2.15.8 so we align with a compatible pylint version

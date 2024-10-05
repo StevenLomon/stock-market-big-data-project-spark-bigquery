@@ -398,6 +398,16 @@ The constraints URL is added to the pip install:
 ```
 pip install -r requirements.txt -c https://raw.githubusercontent.com/apache/airflow/constraints-2.10.2/constraints-3.10.txt
 ```
+After making sure that correct version from the constraints.txt are used in requirements.txt and fixing additional errors like:
+"ERROR: Cannot install -r requirements.txt (line 13) because these package versions have conflicting dependencies.
 
+The conflict is caused by:
+    pylint 3.3.1 depends on astroid<=3.4.0-dev0 and >=3.3.4
+    The user requested (constraint) astroid==2.15.8
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip attempt to solve the dependency conflict"
+the pip install command ran in the terminal without problems. 
 
 ### Infrastructure as Code with Terraform
