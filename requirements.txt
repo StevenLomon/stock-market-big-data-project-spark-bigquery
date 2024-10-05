@@ -5,7 +5,7 @@
 apache-airflow==2.10.2
 
 # Providers
-apache-airflow-providers-google==6.2.0
+apache-airflow-providers-google==10.22.0
 apache-airflow-providers-http==2.1.0
 
 # Additional dependencies
