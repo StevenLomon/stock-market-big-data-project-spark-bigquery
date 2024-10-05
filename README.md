@@ -372,6 +372,14 @@ To start off, the Cloud Composer API is enabled. Composer 3 is chosen over Compo
 
 The DAG is written in VSCode and at the same time, a GitHub Actions workflow is written. This ensures that the code is automatically tested and, if passed, deployed to Composer whenever there are pushes to the `main` branch. (This is my first time using any sort of CI/CD workflow so it's completely new and uncomfortable but the only focus is to just fail forward!!)
 
+In order for the workflow to work, a connection needs to be made between GitHub Actions and Google Cloud. This can be done in one of two ways: the simpler way is to download and store a JSON key file. This however is not recommended by Google themselves: "Service account keys could pose a security risk if compromised. We recommend you avoid downloading service account keys and instead use the Workload Identity Federation." 
+(To get hands-on experience with the Workload Identity Federation, I did my best to see it through:
+In IAM & Admin, a Pool called `github-actions-pool` is created in Workload Identity Federation. OIDC is chosen as Identity Provider Type and `github-provider` is entered as Provider ID. The Issuer URL is `https://token.actions.githubusercontent.com` and the allowed audience in this case is `https://github.com/StevenLomon/stock-market-big-data-project-spark-bigquery`. The CEL expression and attribute mapping value for google.subject is entered as `"system:serviceaccount:" + "github.com/" + attributes.repository + ":" + attributes.workflow`. This maps to the structure system:serviceaccount:github.com/{repository}:{workflow} and helps identify the origin of the request. This didn't work... and resulted in a shitshow of OIDC errors, permission errors and "Error code: 400. The attribute condition must reference one of the provider's claims")
+
+The traditional method of using JSON keys is still perfectly fine for non-production use cases or proof-of-concept projects:
+A JSON key file of the service account is created in IAM & Admin by creating a new service account with `Composer Administrator` and `Storage Object Admin` attached and downloading the JSON key. The contents of the key is stored as `GCP_SA_KEY` in GitHub Actions together with the project ID as `GCP_PROJECT_ID`. Both are stored as Repository secrets since they are only used for this project and this repository. 
+(This is SO MUCH EASIER)
+
 
 
 ### Infrastructure as Code with Terraform
