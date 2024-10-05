@@ -9,5 +9,5 @@ apache-airflow-providers-google==10.22.0
 apache-airflow-providers-http==4.13.0
 
 # Additional dependencies
-google-cloud-storage==2.2.1
+google-cloud-storage==2.18.2
 pylint==3.3.1  # From pypi: The latest version supports Python 3.9.0 and above.
