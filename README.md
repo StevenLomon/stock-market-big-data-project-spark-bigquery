@@ -414,4 +414,7 @@ Further tinkering with version dependencies with the help of ChatGPT resolved al
 (Here I was confused whether to keep the original requirements.txt and pip freeze an additional requirements file with everything correctly pip installed and that's actually what we do!)
 [A requirements.txt for development](/requirements-dev.txt) is created using pip freeze including the current working versions to ensure reproducibility. This is the requirements file that is used in the CI/CD pipeline. The -c flag with the constraints file is thus removed. Here is the constraints file for future refence: https://raw.githubusercontent.com/apache/airflow/constraints-2.3.0/constraints-3.8.txt  
 
+(Personal problems arose which caused my free trial to run. But everything so far has been really valuable and fortunately I have experience with Airflow from earlier projects)
+
 ### Infrastructure as Code with Terraform
+To be done in the future
